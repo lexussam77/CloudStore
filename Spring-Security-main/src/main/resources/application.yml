@@ -1,0 +1,84 @@
+verify_host: http://localhost:8081
+spring:
+  profiles:
+    active: ${active_profile:dev}
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      fail-on-empty-beans: false
+      close-closeable: true
+      flush-after-write-value: true
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cloudstore
+    username: postgres
+    password: cloudstore
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    generate-ddl: true
+
+  sql:
+    init:
+      mode: never
+      continue-on-error: false
+      schema-locations: classpath:/data/schema.sql
+      data-locations: classpath:/data/data.sql
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your_email@gmail.com
+    password: your_password
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime:
+          charset: UTF-8
+        smtp:
+          write-timeout: 10000
+          connection-timeout: 1000
+          timeout: 1000
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    verify:
+      host: ${verify_host}
+
+  cache:
+    expiryDuration: 900
+
+server:
+  port: 8081
+  error:
+    path: /user/error
+    whitelabel:
+      enabled: false
+
+jwt:
+  secret: your_jwt_secret_key
+  expiration: 86400000 # 1 day in milliseconds
+
+# CORS configuration for development
+cors:
+  allowed-origins: "http://localhost:19006, http://localhost:3000"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
